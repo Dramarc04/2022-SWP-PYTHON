@@ -35,6 +35,8 @@ def give_hand(deck):
         while not deck[x].in_deck:
             x = random.randrange(1, 53)
         hand.append(deck[x])
+    reset_deck(deck)
+
     return hand
 
 def detect_ptq(hand):
@@ -119,6 +121,10 @@ def detect_rflush(hand):
     if instance == 5 and street_true == True:
         return 1
     return 0
+
+def reset_deck(deck):
+    for i in range(len(deck)):
+        deck[i].in_deck = True
 
 if __name__ == '__main__':
     deck = initialiseDeck()
