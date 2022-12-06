@@ -59,18 +59,20 @@ def detect_ptq(hand):
     return 0
 
 def detect_tpair(hand):
+    # Save the card that already was used, so that it wont be used again
     savecard = []
     for i in range(0,5):
         for e in range(0,5):
             if hand[i].count == hand[e].count and not i == e and not savecard.__contains__(hand[e]):
                 savecard.append(hand[i])
+    # if two pairs have been found, savecard SHOULD contain 2 cards, so return true if this is the case
     if len(savecard) == 2:
         return True
     return False
 
 def detect_street(hand):
     lowest_value = 99
-    #Calculate the lowest value in the hand
+    # Calculate the lowest value in the hand
     for card in hand:
         if card.count < lowest_value:
             lowest_value = card.count
@@ -85,7 +87,7 @@ def detect_street(hand):
             return False
     return True
 
-#detect a flush
+# Used to detect a flush in your hand
 def detect_flush(hand):
     instance = 0
     card = hand[0]
@@ -97,6 +99,7 @@ def detect_flush(hand):
         return True
     return False
 
+# Used to detect a full house in a given hand
 def detect_fullhouse(hand):
     pair = False
     triple = False
@@ -234,11 +237,11 @@ if __name__ == '__main__':
     deck = initialiseDeck()
     for i in deck:
         print(deck[i])
-    ammount = 10000
+    ammount = 1000000
     output = check_times(ammount, deck)
     print(output)
     for i in output:
-        output[i] = (output[i]/ammount)*100
+        output[i] = round(((output[i]/ammount)*100),6)
     print(output)
 
 
