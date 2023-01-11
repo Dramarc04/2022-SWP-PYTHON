@@ -2,10 +2,15 @@
 import csv
 import os
 import random
+from dataclasses import dataclass
 from enum import Enum
 
+import requests
+from flask import Flask, jsonify, request
+from flask_restful import Api, Resource
 from numpy.core.defchararray import upper
-
+from sqlalchemy import create_engine, Column, Integer, Text, DateTime, func
+from sqlalchemy.orm import declarative_base, scoped_session, sessionmaker
 
 class game_symbols(Enum):
     STONE = 1
@@ -13,6 +18,7 @@ class game_symbols(Enum):
     SCISSORS = 3
     SPOCK = 4
     LIZARD = 5
+
 
 def compare_values(symbol1, symbol2):
     winner = 0
@@ -65,6 +71,7 @@ def compare_values(symbol1, symbol2):
         winner = 0
     return winner
 
+
 def generate_dict():
     dict = {}
     dict["TotalPlays"] = 0
@@ -77,14 +84,15 @@ def generate_dict():
         dict[f"{i.name}ChosenC"] = 0
     return dict
 
-def insert_dict(dict, player_symbol,computer_symbol, winner):
+
+def insert_dict(dict, player_symbol, computer_symbol, winner):
     dict["TotalPlays"] += 1
     if winner == 1:
         dict["PlayerWins"] += 1
     elif winner == 2:
-        dict["CompWins"] +=1
+        dict["CompWins"] += 1
     else:
-        dict["Tie"] +=1
+        dict["Tie"] += 1
     dict[f"{player_symbol.name}ChosenP"] += 1
     dict[f"{computer_symbol.name}ChosenC"] += 1
 
@@ -101,7 +109,7 @@ def game():
         print(player_input)
         player_symbol = game_symbols[str(player_input)]
         print("The Computer is choosing")
-        computer_symbol = game_symbols(random.randint(1,5))
+        computer_symbol = game_symbols(random.randint(1, 5))
         print(f"Computer has chosen {computer_symbol.name}")
         result = compare_values(player_symbol, computer_symbol)
         if result == 1:
@@ -119,6 +127,7 @@ def game():
     stats = dict
     return stats
 
+
 def print_stats():
     saved_data = {}
     with open("statistics.csv", "r") as data:
@@ -128,6 +137,7 @@ def print_stats():
     for item in saved_data:
         print(f"{item}: {saved_data[item]}")
 
+
 def upload(dicti):
     if not os.path.exists('statistics.csv'):
 
@@ -135,7 +145,6 @@ def upload(dicti):
         w.writeheader()
         w.writerow(dicti)
     else:
-        saved_data = {}
         with open("statistics.csv", "r") as data:
             output = csv.DictReader(data, delimiter=";")
             for item in output:
@@ -147,6 +156,16 @@ def upload(dicti):
         w.writeheader()
         w.writerow(saved_data)
 
+        response = requests.delete('http://localhost:5000/result/1')
+        j = {'ResultId': 1, 'PlayerWins': saved_data["PlayerWins"], 'CompWins': saved_data["CompWins"], 'Tie': saved_data["Tie"],
+        'SpockChosenP': saved_data["SPOCKChosenP"], 'StoneChosenP': saved_data["STONEChosenP"],
+        'ScissorsChosenP': saved_data["SCISSORSChosenP"], 'PaperChosenP': saved_data["PAPERChosenP"],
+        'LizardChosenP': saved_data["LIZARDChosenP"], 'SpockChosenC': saved_data["SPOCKChosenC"], 'StoneChosenC': saved_data["STONEChosenC"],
+        'ScissorsChosenC': saved_data["SCISSORSChosenC"], 'PaperChosenC': saved_data["PAPERChosenC"],
+        'LizardChosenC': saved_data["LIZARDChosenC"]}
+        response = requests.put('http://localhost:5000/result/1', json=j)
+        print(response)
+        print(response.json)
 
 def game_menu():
     game_running = True
@@ -164,6 +183,7 @@ def game_menu():
         elif pinput == "END":
             print("Thank you for playing!")
             game_running = False
+
 
 if __name__ == '__main__':
     game_menu()

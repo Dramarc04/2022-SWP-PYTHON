@@ -8,9 +8,11 @@ import random
 def Lotto_Ziehung():
     result = []
     for i in range(1,7):
-        e = int(random.random()*45+1)
+        e = random.randint(1,45)
+        print(e)
         while result.__contains__(e):
-            e = int(random.random()*45+1)
+            e = random.randint(1,45)
+            print(e)
         result.append(e)
     return result
 
