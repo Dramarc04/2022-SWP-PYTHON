@@ -101,7 +101,7 @@ def game():
     restart = 1
     round = 1
     dict = generate_dict()
-    print(str(dict))
+    #print(str(dict))
     print("Welcome to Stone, Paper, Scissors, Lizard, Spock!")
     while restart == 1:
         print(f"Round {round}!")
