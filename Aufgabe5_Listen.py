@@ -61,6 +61,7 @@ class Element():
     def get_content(self):
         return self.content
 
+
 if __name__ == '__main__':
     el_list = EinfacheVerketteteListe()
     for i in range(random.randint(5, 10)):
