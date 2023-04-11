@@ -45,19 +45,19 @@ class DoubleLinkedList:
     def insert(self, index, data):
         if not isinstance(data, int):
             raise ValueError("Data must be an integer")
-        new_node = Element(data)
+        new_element = Element(data)
         if index == len(self.array):
             self.append(data)
         else:
-            node_at_index = self.get_element_by_index(index)
-            if node_at_index.prev:
-                node_at_index.prev.next = new_node
+            element_at_index = self.get_element_by_index(index)
+            if element_at_index.prev:
+                element_at_index.prev.next = new_element
             else:
-                self.first = new_node
-            new_node.prev = node_at_index.prev
-            new_node.next = node_at_index
-            node_at_index.prev = new_node
-            self.array.insert(index, new_node)
+                self.first = new_element
+            new_element.prev = element_at_index.prev
+            new_element.next = element_at_index
+            element_at_index.prev = new_element
+            self.array.insert(index, new_element)
 
     def remove(self, index):
         if index < 0 or index >= len(self.array):
